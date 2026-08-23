@@ -1,0 +1,17 @@
+{
+  "phase": "scaffold_cloned",
+  "updated_at": "2026-08-23T18:27:48.291632+00:00",
+  "slug": "mhstyle-rush",
+  "type": "shop",
+  "package": "mhstore.apparel.mhstylerush",
+  "prefix": "JNVNJ",
+  "app_name": "MHStyle Rush",
+  "task_gid": "1217494074751011",
+  "task_name": "GB GW4 C1501",
+  "asana_url": "https://app.asana.com/1/1208304498069546/project/1213586227413017/task/1217494074751011",
+  "domain": "https://mhstore.surf",
+  "company": "MH STORE LTD",
+  "repo_url": "https://github.com/ArtCode379/mhstyle-rush",
+  "quality_status": "not_run",
+  "build_status": "not_run"
+}
