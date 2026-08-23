@@ -1,8 +1,14 @@
 package mhstore.apparel.mhstylerush.ui.composable.screen.checkout
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -14,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mhstore.apparel.mhstylerush.ui.state.DataUiState
 import mhstore.apparel.mhstylerush.ui.viewmodel.CheckoutViewModel
@@ -32,15 +39,13 @@ fun CheckoutScreen(
     val isButtonEnabled by remember {
         derivedStateOf {
             viewModel.customerFirstName.isNotEmpty() &&
-                    viewModel.customerLastName.isNotEmpty() &&
-                    viewModel.customerEmail.isNotEmpty()
+                viewModel.customerLastName.isNotEmpty() &&
+                viewModel.customerEmail.isNotEmpty()
         }
     }
 
     if (orderState is DataUiState.Populated) {
-        CheckoutDialog(
-            onConfirm = onNavigateToOrdersScreen
-        )
+        CheckoutDialog(onConfirm = onNavigateToOrdersScreen)
     }
 
     CheckoutContent(
@@ -54,7 +59,7 @@ fun CheckoutScreen(
         onFirstNameChanged = viewModel::updateCustomerFirstName,
         onLastNameChanged = viewModel::updateCustomerLastName,
         onEmailChanged = viewModel::updateCustomerEmail,
-        onPlaceOrderButtonClick = viewModel::placeOrder
+        onPlaceOrderButtonClick = viewModel::placeOrder,
     )
 }
 
@@ -72,8 +77,59 @@ private fun CheckoutContent(
     onEmailChanged: (String) -> Unit,
     onPlaceOrderButtonClick: () -> Unit,
 ) {
-    Column(modifier = modifier) {
-
+    Column(
+        modifier = modifier.fillMaxSize().padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        Text("Reserve your order", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            "Enter your collection details. Your reservation will be held in store for 24 hours.",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        CheckoutTextField(
+            input = customerFirstName,
+            onInputChange = onFirstNameChanged,
+            labelText = "First name",
+            modifier = Modifier.fillMaxWidth(),
+        )
+        CheckoutTextField(
+            input = customerLastName,
+            onInputChange = onLastNameChanged,
+            labelText = "Last name",
+            modifier = Modifier.fillMaxWidth(),
+        )
+        CheckoutTextField(
+            input = customerEmail,
+            onInputChange = onEmailChanged,
+            labelText = "Email address",
+            modifier = Modifier.fillMaxWidth(),
+            isError = isEmailInvalid,
+        )
+        if (isEmailInvalid) {
+            Text("Enter a valid email address", color = MaterialTheme.colorScheme.error)
+        }
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Text("Collection promise", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "After confirmation, your order number and collection details will appear in Reservations.",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+        Button(
+            onClick = {
+                focusManager.clearFocus()
+                onPlaceOrderButtonClick()
+            },
+            enabled = isButtonEnabled,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Place Reservation")
+        }
     }
 }
 
@@ -93,26 +149,22 @@ fun CheckoutTextField(
         onValueChange = onInputChange,
         modifier = modifier,
         enabled = enabled,
-        label = {
-            Text(
-                text = labelText,
-                style = MaterialTheme.typography.titleSmall,
-            )
-        },
+        label = { Text(text = labelText, style = MaterialTheme.typography.titleSmall) },
         isError = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-            focusedLabelColor = MaterialTheme.colorScheme.primary,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            cursorColor = MaterialTheme.colorScheme.primary
-        ),
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                cursorColor = MaterialTheme.colorScheme.primary,
+            ),
     )
 }
